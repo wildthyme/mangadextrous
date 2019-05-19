@@ -4,9 +4,8 @@ outputFolder=`node -pe 'JSON.parse(process.argv[1]).outputFolder' "$(cat $DIR/co
 node $DIR/index.js
 for i in `ls -1 "$outputFolder"`; do
   if [[ $i != json ]] && [[ $i != *.cbz ]]; then
-    echo true
     for j in `ls -1 "$outputFolder/$i"`; do
-      zip -ju "$outputFolder/$i$j.cbz" "$outputFolder/$i/$j/"*/*
+      zip -ju "$outputFolder/$i$j.cbz" "$outputFolder/$i/$j/ComicInfo.xml" "$outputFolder/$i/$j/"*/*
   done;
   fi;
 done
