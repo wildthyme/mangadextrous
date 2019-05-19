@@ -1,0 +1,19 @@
+{
+  "name": "mangadextrous",
+  "version": "1.0.0",
+  "description": "utility to download manga from mangadex",
+  "main": "index.js",
+  "module": "main.js",
+  "dependencies": {
+    "bottleneck": "^2.17.1",
+    "esm": "^3.2.25",
+    "numeral": "^2.0.6",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Iris W",
+  "license": "MIT"
+}
