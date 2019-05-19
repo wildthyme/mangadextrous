@@ -13,13 +13,13 @@ const limiter = new Bottleneck({
   minTime: 100,
   maxConcurrent: 5
 });
-function fetchOrLoad(path, fileName, url, isImage = false, writeFile = true) {
+function fetchOrLoad(path, fileName, url, isImage = false, dontRead = false) {
   return new Promise ((resolve, reject) => {
     let fullPath = path + '/' + fileName
     fs.access(fullPath, (err) => {
-      if (err && err.code === 'ENOENT') {
-        if(writeFile) {
-          // console.log('No existing file ' + fullPath);
+      if ((err && err.code === 'ENOENT' || dontRead) {
+        if(!dontRead) {
+          console.log('No existing file ' + fullPath);
         }
         let opts = {url: url};
         let encoding = 'utf8';
@@ -27,28 +27,26 @@ function fetchOrLoad(path, fileName, url, isImage = false, writeFile = true) {
           opts.encoding = null;
           let encoding = 'binary';
         }
-        // limiter.submit(request, opts, (err, response, body) => {
-        //   if (err) reject(err);
-        //   if (writeFile) {
-        //     fs.mkdir(path, {recursive: true}, err => {
-        //       if (err) console.error(err);
-        //       fs.writeFile(fullPath, body, encoding, err => {
-        //         console.log('Downloaded ' + fullPath);
-        //       });
-        //     });
-        //   }
-        //   if(!isImage) {
-        //     resolve(JSON.parse(body));
-        //   } else {
-        //     resolve(true);
-        //   }
-        // });
+        limiter.submit(request, opts, (err, response, body) => {
+          if (err) reject(err);
+          fs.mkdir(path, {recursive: true}, err => {
+            if (err) console.error(err);
+            fs.writeFile(fullPath, body, encoding, err => {
+              console.log('Downloaded ' + fullPath);
+            });
+          });
+          if(!isImage) {
+            resolve(JSON.parse(body));
+          } else {
+            resolve(true);
+          }
+        });
       } else if (isImage) {
-        // console.log('Existing file ' + fullPath);
+        console.log('Existing file ' + fullPath);
         resolve(true);
       } else {
         fs.readFile(fullPath, 'utf8', (err, file) => {
-          // console.log('Existing file ' + fullPath);
+          console.log('Existing file ' + fullPath);
           resolve(JSON.parse(file));
         });
       }
@@ -94,7 +92,7 @@ function getImages (chapters) {
 }
 let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
   configuredManga[mangaID].langCode = typeof(configuredManga[mangaID].langCode) == 'undefined' ? 'gb' : configuredManga[mangaID].langCode
-  let manga = fetchOrLoad(outputFolder + '/json', mangaID + '.json', 'https://mangadex.org/api/manga/' + mangaID, false, false)
+  let manga = fetchOrLoad(outputFolder + '/json', mangaID + '.json', 'https://mangadex.org/api/manga/' + mangaID, false, true)
   manga.then((result) => {
     let chapterIDs = Object.keys(result.chapter).filter((chapter) => {
       return result.chapter[chapter].lang_code === configuredManga[mangaID].langCode;
