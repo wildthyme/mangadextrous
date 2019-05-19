@@ -1,5 +1,5 @@
 # mangadextrous
-this is a fairly simple script to download manga from mangadex and get new issues whenever rerun. the config looks like so:
+this is a fairly simple script to download manga from mangadex and get new issues whenever rerun. the config should be put in `config.json` and looks like so:
 
 ```json
 {
