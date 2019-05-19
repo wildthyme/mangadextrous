@@ -17,7 +17,7 @@ function fetchOrLoad(path, fileName, url, isImage = false, dontRead = false) {
   return new Promise ((resolve, reject) => {
     let fullPath = path + '/' + fileName
     fs.access(fullPath, (err) => {
-      if ((err && err.code === 'ENOENT' || dontRead) {
+      if ((err && err.code === 'ENOENT') || dontRead) {
         if(!dontRead) {
           console.log('No existing file ' + fullPath);
         }
