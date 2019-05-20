@@ -106,10 +106,10 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
         let timestamps = volChapters.map(chapter => chapter.timestamp);
         let timestamp = new Date(1000*Math.max.apply(Math, timestamps));
         return {
-          vol: he.encode(vol),
-          year: he.encode(timestamp.getFullYear().toString()),
-          month: he.encode((timestamp.getMonth()+1).toString()),
-          day: he.encode(timestamp.getUTCDate().toString())
+          vol: he.escape(vol),
+          year: he.escape(timestamp.getFullYear().toString()),
+          month: he.escape((timestamp.getMonth()+1).toString()),
+          day: he.escape(timestamp.getUTCDate().toString())
         }
       });
       let languageISO = countryLanguage.getCountryLanguages(configuredManga[mangaID].langCode, (err, langs) => {
@@ -120,12 +120,12 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
         }
       });
       let metadata = {
-        series: he.encode(result.manga.title),
-        artist: he.encode(result.manga.artist),
-        writer: he.encode(result.manga.author),
-        summary: he.encode(result.manga.description),
-        web: he.encode('https://mangadex.org/title/' + mangaID),
-        languageISO: he.encode(languageISO),
+        series: he.escape(result.manga.title),
+        artist: he.escape(result.manga.artist),
+        writer: he.escape(result.manga.author),
+        summary: he.escape(result.manga.description),
+        web: he.escape('https://mangadex.org/title/' + mangaID),
+        languageISO: he.escape(languageISO),
         volumes: timestampedVols,
         direction: result.manga.lang_name === 'Japanese' ? 'YesAndRightToLeft' : 'Yes',
         tags: result.manga.genres.reduce((acc, cur) => acc + ', ' + tags[cur].toLowerCase(), '').substring(2)
