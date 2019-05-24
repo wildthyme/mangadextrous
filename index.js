@@ -80,8 +80,8 @@ function getImages (chapters) {
         return numeral(match).format('0000');
       }
       images.push({
-        folder: util.format('%s/%s/vol%s/ch%s%s', outputFolder, item.manga_id, numeral(item.volume).format('000'), numeral(item.chapter).format('000.0'), item.titleString),
-        fileName: util.format('vol%sch%s%s - %s - %s', numeral(item.volume).format('000'), numeral(item.chapter).format('000.0'), item.titleString, item.hash, page.replace(/^[A-Za-z]?(\d+)/, padPage)),
+        folder: util.format('%s/%s/vol%s/ch%s%s', outputFolder, item.manga_id, numeral(item.volume).format('000'), numeral(item.chapter).format('000.00'), item.titleString),
+        fileName: util.format('vol%sch%s%s - %s - %s', numeral(item.volume).format('000'), numeral(item.chapter).format('000.00'), item.titleString, item.hash, page.replace(/^[A-Za-z]?(\d+)/, padPage)),
         url: item.server + item.hash + '/' + page
       });
     });
