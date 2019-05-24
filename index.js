@@ -81,7 +81,7 @@ function getImages (chapters) {
       }
       images.push({
         folder: util.format('%s/%s/vol%s/ch%s%s', outputFolder, item.manga_id, numeral(item.volume).format('000'), numeral(item.chapter).format('000.0'), item.titleString),
-        fileName: util.format('vol%sch%s%s - %s', numeral(item.volume).format('000'), numeral(item.chapter).format('000.0'), item.titleString, page.replace(/^[A-Za-z]?(\d+)/, padPage)),
+        fileName: util.format('vol%sch%s%s - %s - %s', numeral(item.volume).format('000'), numeral(item.chapter).format('000.0'), item.titleString, item.hash, page.replace(/^[A-Za-z]?(\d+)/, padPage)),
         url: item.server + item.hash + '/' + page
       });
     });
@@ -92,9 +92,16 @@ function getImages (chapters) {
 }
 let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
   configuredManga[mangaID].langCode = typeof(configuredManga[mangaID].langCode) == 'undefined' ? 'gb' : configuredManga[mangaID].langCode
-  let manga = fetchOrLoad(outputFolder + '/json', mangaID + '.json', 'https://mangadex.org/api/manga/' + mangaID, false, true)
+  let manga = fetchOrLoad(outputFolder + '/json', mangaID + '.json', 'https://mangadex.org/api/manga/' + mangaID, false, false) /* tmp */
   manga.then((result) => {
     let chapterIDs = Object.keys(result.chapter).filter((chapter) => {
+      if (typeof(configuredManga[mangaID].ignoredGroups) != 'undefined') {
+        ["group_id", "group_id_2", "group_id_3"].forEach(val => {
+          if (configuredManga[mangaID].ignoredGroups.includes(result.chapter[chapter][val])) {
+            return false
+          }
+        });
+      }
       return result.chapter[chapter].lang_code === configuredManga[mangaID].langCode;
     });
     Promise.all(chapterIDs.map(chapterID => {
@@ -130,6 +137,7 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
         direction: result.manga.lang_name === 'Japanese' ? 'YesAndRightToLeft' : 'Yes',
         tags: result.manga.genres.reduce((acc, cur) => acc + ', ' + tags[cur].toLowerCase(), '').substring(2)
       };
+
       metadata.volumes.forEach(volume => {
         let title = metadata.volumes.length === 1 ? metadata.series : `${metadata.series} (${volume.vol})`
         let comicInfoXML = `<?xml version="1.0"?>
@@ -149,7 +157,6 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
       <LanguageISO>${metadata.languageISO}</LanguageISO>
       <Manga>${metadata.direction}</Manga>
     </ComicInfo>`
-        console.log(comicInfoXML);
 
         let path = `${outputFolder}/${mangaID}/vol${numeral(volume.vol).format('000')}`
         fs.mkdir(path, {recursive: true}, err => {

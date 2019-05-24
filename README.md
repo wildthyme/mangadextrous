@@ -13,12 +13,18 @@ this is a fairly simple script to download manga from mangadex and get new issue
       "4": 9,
       "5": 10,
       "6": 12
-    }
+    },
+  },
+  "607": {
+    "langCode": "gb",
+    "ignoredGroups": [
+      4007
+    ]
   }
 }
 ```
 
-`outputFolder` is where images and cached chapter information will be stored. every other key in the config should be a mangadex manga id. each accepts a `langCode` to determine which language to get (defaults to english). `volumes` is optional, used for specifying the first chapter of each volume and referred to when mangadex doesn't have a volume listed. if it's left out, volume-less chapters of the manga will be put in volume 0.
+`outputFolder` is where images and cached chapter information will be stored. every other key in the config should be a mangadex manga id. each accepts a `langCode` to determine which language to get (defaults to english). `volumes` is optional, used for specifying the first chapter of each volume and referred to when mangadex doesn't have a volume listed. if it's left out, volume-less chapters of the manga will be put in volume 0. `ignoredGroups` is an optional array of ids for translation groups to skip when downloading chapters (useful if there are two translations of the same thing).
 
 also included is a bash script, `cbzgen.sh`, which runs manga downloads and then generates (or updates if already-existing) a cbz for each volume.
 
