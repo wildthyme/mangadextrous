@@ -92,7 +92,7 @@ function getImages (chapters) {
 }
 let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
   configuredManga[mangaID].langCode = typeof(configuredManga[mangaID].langCode) == 'undefined' ? 'gb' : configuredManga[mangaID].langCode
-  let manga = fetchOrLoad(outputFolder + '/json', mangaID + '.json', 'https://mangadex.org/api/manga/' + mangaID, false, false) /* tmp */
+  let manga = fetchOrLoad(outputFolder + '/json', mangaID + '.json', 'https://mangadex.org/api/manga/' + mangaID, false, true)
   manga.then((result) => {
     let chapterIDs = Object.keys(result.chapter).filter((chapter) => {
       if (typeof(configuredManga[mangaID].ignoredGroups) != 'undefined') {
