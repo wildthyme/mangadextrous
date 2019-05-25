@@ -161,8 +161,14 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
         let path = `${outputFolder}/${mangaID}/vol${numeral(volume.vol).format('000')}`
         fs.mkdir(path, {recursive: true}, err => {
           if (err) console.error(err);
-          fs.writeFile(path + '/ComicInfo.xml', comicInfoXML, 'utf8', err => {
-            console.log(`Saved metadata to ${path}/ComicInfo.xml`);
+          fs.readFile(path + '/ComicInfo.xml', 'utf8', (err, file) => {
+            if ((err && err.code === 'ENOENT') || file !== comicInfoXML) {
+              fs.writeFile(path + '/ComicInfo.xml', comicInfoXML, 'utf8', err => {
+                console.log(`Saved metadata to ${path}/ComicInfo.xml`);
+              });
+            } else {
+              console.log(`File up to date: ${path}/ComicInfo.xml`);
+            }
           });
         });
 
