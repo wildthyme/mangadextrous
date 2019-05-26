@@ -79,10 +79,11 @@ function getImages (chapters) {
       function padPage (match, offset, string) {
         return numeral(match).format('0000');
       }
+      let server = item.server === '/data/' ? 'https://mangadex.org/data/' : item.server;
       images.push({
         folder: util.format('%s/%s/vol%s/ch%s%s', outputFolder, item.manga_id, numeral(item.volume).format('000'), numeral(item.chapter).format('000.00'), item.titleString),
         fileName: util.format('vol%sch%s%s - %s - %s', numeral(item.volume).format('000'), numeral(item.chapter).format('000.00'), item.titleString, item.hash, page.replace(/^[A-Za-z]?(\d+)/, padPage)),
-        url: item.server + item.hash + '/' + page
+        url: server + item.hash + '/' + page
       });
     });
   });
@@ -127,7 +128,7 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
         }
       });
       let metadata = {
-        series: he.escape(result.manga.title),
+        series: he.escape(he.decode(result.manga.title)),
         artist: he.escape(result.manga.artist),
         writer: he.escape(result.manga.author),
         summary: he.escape(result.manga.description),
@@ -144,7 +145,7 @@ let mangas = Promise.all(Object.keys(configuredManga).map(mangaID => {
     <ComicInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <Title>${title}</Title>
       <Series>${metadata.series}</Series>
-      <Volume>${volume.vol}</Volume>
+      <Issue>${volume.vol}</Issue>
       <Summary>${metadata.summary}</Summary>
       <Year>${volume.year}</Year>
       <Month>${volume.month}</Month>
